@@ -1,0 +1,20 @@
+class Solution {
+public:
+    int coinChange(vector<int>& cn, int amt) {
+        vector<int>dp(amt+1,1e9);
+        dp[0] = 0;
+        for(int i=1;i<=amt;i++){
+            if(dp[i] == 1e9){
+                int ans = dp[i];
+                for(int j=cn.size()-1;j>=0;j--){
+                    if(cn[j]<i){
+                        ans = min(dp[i - cn[j]],ans);
+                    }else if(cn[j] == i)ans = 0;
+                }
+                dp[i] = min(dp[i],ans+1);
+            }
+        }
+        if(dp[amt] == 1e9)dp[amt] = -1;
+        return dp[amt];
+    }
+};
