@@ -1,0 +1,77 @@
+//Author: Fuadul Hasan(fuadul202@gmail.com)
+#include<bits/stdc++.h>
+using namespace std;
+
+#define int long long
+#define F first
+#define S second
+#define pb  push_back
+#define vi  vector<int>
+#define all(n) n.begin(),n.end()
+#define vout(v) for (auto z: v) cout << z << " "; cout << endl;
+const int M = 1e9 + 7;
+
+const int N   = 4e5 + 5;
+
+int dist[N];
+std::vector<pair<int,int>> adj[N];
+int par[N];
+
+void dijkastra(int s,int n){
+	for(int i=1;i<=n;i++){
+		dist[i] = 1e18;
+	}
+
+	priority_queue<pair<int,int> , std::vector<pair<int,int>>, greater<pair<int,int>>> pq;
+	pq.push({0,s});
+	dist[s] = 0;
+	while(!pq.empty()){
+		int u = pq.top().S;
+		int curD = pq.top().F;
+		pq.pop();
+		if(dist[u] < curD){
+			continue;
+		}
+		for(auto v: adj[u]){
+			if(curD + v.S < dist[v.F]){
+				dist[v.F] = curD + v.S;
+				par[v.F] = u;
+				pq.push({dist[v.F], v.F});
+			}
+		}
+	}
+}
+
+signed main(){
+	
+	int n,m;
+	scanf("%lld%lld", &n,&m);
+
+	for(int i=1;i<=m;i++){
+		int u,v,w;
+		scanf("%lld%lld%lld", &u,&v,&w);
+		adj[u].pb({v,w});
+		adj[v].pb({u,w});
+	}
+	dijkastra(1,n);
+
+
+	if(dist[n] == 1e18){
+		printf("-1\n");
+		return 0;
+	}
+
+	std::vector<int> ans = {n};
+
+	int u = n;
+	while(par[u] != 0){
+		ans.pb(par[u]);
+		u = par[u];
+	}
+
+	reverse(all(ans));
+
+	vout(ans);
+
+	return 0;
+}
