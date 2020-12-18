@@ -1,0 +1,76 @@
+//https://www.spoj.com/problems/SHPATH/
+
+//Author: Fuadul Hasan(fuadul202@gmail.com)
+#include<bits/stdc++.h>
+using namespace std;
+
+#define int long long
+#define pb  push_back
+#define vi  vector<int>
+#define all(n) n.begin(),n.end()
+#define vout(v) for (auto z: v) cout << z << " "; cout << endl;
+const int M = 1e9 + 7;
+const int N   = 4e4 + 5;
+
+int par[N];
+int dist[N];
+std::vector<pair<int,int>> adj[N];
+priority_queue<pair<int,int>, std::vector<pair<int,int>>, greater<pair<int,int>>> pq;
+unordered_map<string,int>m;
+
+void  dijkastra(int s,int n){
+	for(int i=0;i<=n;i++){
+		dist[i] = 1e18;
+	}
+	dist[s] = 0;
+	pq.push({0,s});
+	while(!pq.empty()){
+		int u = pq.top().second;
+		int curD = pq.top().first;
+		pq.pop();
+		if(curD > dist[u]) continue;
+		for(auto v: adj[u]){
+			int node = v.first;
+			int weight = v.second;
+			if(dist[node] > weight+curD){
+				dist[node] = weight+curD;
+				pq.push({dist[node],node});
+			}
+		}
+	}
+}
+
+signed main(){
+	cin.tie(0);
+	ios::sync_with_stdio(false);
+	int t;
+	cin>>t;
+	while(t--){
+		m.clear();
+		for(int i=0;i<N;i++)adj[i].clear();
+		int n;
+		cin>>n;
+		int y,w;
+		string s;
+		int loop;
+		for(int i=1;i<=n;i++){
+			cin>>s>>loop;
+			m[s] = i;
+			while(loop--){
+				cin>>y>>w;
+				adj[i].pb({y,w});
+			}
+		}
+		int findpath;
+		cin>>findpath;
+		while(findpath--){
+			string a,b;
+			cin>>a>>b;
+			int x = m[a];
+			int y = m[b];
+			dijkastra(x,n);
+			cout<<dist[y]<<endl;
+		}
+	}
+	return 0;
+}
