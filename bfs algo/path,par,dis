@@ -1,0 +1,57 @@
+#include <bits/stdc++.h>
+using namespace std;
+const int N = 1e5+5;
+std::vector<int> g[N];
+int par[N],vis[N],dis[N];
+
+
+void bfs(int u)
+{
+	if(!vis[u]){
+		queue<int>q;
+		q.push(u);
+		vis[u] = 1;
+		//par[u] = u;
+		dis[u] = 0;
+		while(!q.empty()){
+		u = q.front();
+		cout<<u<<" ";
+		q.pop();
+		for(int v: g[u]){
+			if(!vis[v]){
+				q.push(v);
+				vis[v] =1;
+				dis[v] = dis[u]+1;
+				par[v] = u;
+				}
+			}
+		}cout<<endl;
+	}
+}
+
+void path(int u)
+{
+	if(par[u])path(par[u]);
+	printf("%d ", u);
+}
+
+int  main()
+{
+	int n,m;
+	cin>>n>>m;
+	for(int i=0;i<m;i++){
+		int a,b;
+		cin>>a>>b;
+		g[a].push_back(b);
+		g[b].push_back(a);
+	}
+
+	for(int i=1;i<=n;i++){
+		bfs(i);
+	}
+	cout<<endl;
+	path(n);
+	cout<<endl;
+	cout<<dis[n]<<endl;
+
+}
