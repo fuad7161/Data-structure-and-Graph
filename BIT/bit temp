@@ -1,0 +1,33 @@
+template<TN T>
+struct BIT{
+    int n;
+    vector<T>t;
+    BIT(){};
+    BIT(int _n){
+        n = _n;
+        t.assign(n+1 , 0);
+    }
+    T query(int i){
+        T ans = 0;
+        while(i > 0){
+            ans += t[i];
+            i -= (i&-i);
+        }
+        return ans;
+    }
+    void upd(int i, T val){
+        if(i <= 0)return ;
+        while(i<=n){
+            t[i] += val;
+            i += (i&-i);
+        }
+    }
+    void upd(int l, int r , T val){
+        upd(l, val);
+        upd(r+1 , -val);
+    }
+
+    T query(int l, int r){
+        return query(r) - query(l-1);
+    }
+};
