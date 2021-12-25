@@ -1,0 +1,50 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+const int N = 1e5+5;
+
+int bit[N];
+int a[N];
+int n;
+
+void update(int val, int i){
+    while(i<=n){
+        bit[i] += val;
+        i += (i&-i);
+    }
+}
+
+int query(int x){
+    int sum = 0;
+    while(x>0){
+        sum += bit[x];
+        x -= (x&-x);
+    }
+    return sum;
+}
+
+int query(int x, int y){
+    return query(y) - query(x-1);
+}
+
+int main(){
+    cin.tie(0);ios::sync_with_stdio(false);
+
+    cin>>n;
+    for(int i=1;i<=n;i++){
+        cin>>a[i];
+        update(a[i] , i);
+    }
+
+    int q;
+    cin>>q;
+
+    while(q--){
+        int l,r;
+        cin>>l>>r;
+
+        cout<<query(l,r)<<endl;
+    }
+
+    return 0;
+}
