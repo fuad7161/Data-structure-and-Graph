@@ -1,0 +1,48 @@
+class Solution {
+public:
+    struct node{
+        node* a[2];
+    };
+        
+    node *getnode(){
+        node* n = new node;
+        n->a[0] = NULL;
+        n->a[1] = NULL;
+        return n;
+    }
+    void insert(int x , node* root){
+        bitset<32>t = x;
+        node* tem = root;
+        for(int i=31;i>=0;i--){
+            if(tem->a[t[i]] == NULL){
+                tem->a[t[i]] = getnode();
+            }
+            tem = tem->a[t[i]];
+        }
+    }
+    int ans = 0;
+    void get(int x , node* root){
+        bitset<32>t = x;
+        node* tem = root;
+        int sum = 0;
+        for(int i=31;i>=0;i--){
+            if(tem->a[!(t[i])] != NULL){
+                sum += (1<<i);
+                tem = tem->a[!(t[i])];
+            }else{
+                tem = tem->a[(t[i])] ;  
+            }
+        }
+        ans = max(ans , sum);
+    }
+    int findMaximumXOR(vector<int>& nums) {
+        node* root = getnode();
+        for(auto i: nums){
+            insert(i , root);
+        }
+        for(auto i: nums){
+            get(i,root);
+        }
+        return ans;
+    }
+};
