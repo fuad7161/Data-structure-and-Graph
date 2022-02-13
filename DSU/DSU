@@ -1,0 +1,39 @@
+template <TN T> class dsu{
+private:
+    struct data{
+        T par,rank,setsize;
+        data(){
+            par = rank = setsize = 0;
+        }
+    };
+    vector<data>g;
+    int n;
+public:
+    int setnum;
+    dsu(int _n){
+        n = _n;
+        setnum = n;
+        g.resize(n+5);
+        for(int i=1;i<=n;i++){
+            g[i].par = i;
+            g[i].rank = 0;
+            g[i].setsize = 1;
+        }
+    }
+    T root(int x){
+        return g[x].par = g[x].par == x?x:root(g[x].par);
+    }
+
+    void merge(int a,int b){
+        int x = root(a);
+        int y = root(b);
+        if(x == y)return;
+        if(g[x].rank <= g[y].rank)swap(x,y);
+        g[y].par = x;
+        g[x].setsize += g[y].setsize;
+        if(g[x].rank == g[y].rank){
+            g[y].rank++;
+        }
+        setnum--;
+    }
+};
