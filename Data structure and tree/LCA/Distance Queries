@@ -1,0 +1,57 @@
+https://cses.fi/problemset/task/1135
+#include<bits/stdc++.h>
+using namespace std;
+
+const int N = 200005;
+const int k = 18;
+vector<int> g[N];
+int par[N][k];
+int dep[N];
+void dfs(int x, int p = -1 , int d = 0){
+    dep[x] = d;
+    for(int i=1;i<k;i++){
+        par[x][i] = par[par[x][i-1]][i-1];
+    }
+    for(int y: g[x]){
+        if(y != p){
+            par[y][0] = x;
+            dfs(y,x,d+1);
+        }
+    }
+}
+
+int get_lca(int x,int y){
+    if(dep[x] > dep[y]) swap(x,y);
+    for(int i=k-1;i>=0 and x != y ; i--){
+        if(dep[par[y][i]] >= dep[x]){
+            y = par[y][i];
+        }
+    }
+    if(x == y)return x;
+    for(int i=k-1;i>=0;i--){
+        if(par[x][i] != par[y][i]){
+            x = par[x][i];
+            y = par[y][i];
+        }
+    }
+    return par[x][0];
+}
+
+int main(){
+    int n,t;
+    cin>>n>>t;
+    int x , y;
+    for(int i=0;i<n-1;i++){
+        cin>>x>>y;
+        g[x].push_back(y);
+        g[y].push_back(x);
+    }
+    par[1][0] = 1;
+    dfs(1);
+    while(t--){
+        cin>>x>>y;
+        int z = get_lca(x,y);
+        cout<<(dep[x]-dep[z])+((dep[y]-dep[z]))<<endl;
+    }
+    return 0;
+}
