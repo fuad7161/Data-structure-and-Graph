@@ -1,0 +1,81 @@
+//https://codeforces.com/contest/1725/problem/M
+#include <bits/stdc++.h>
+using namespace std;
+
+//debug..........
+#define error(args...) {vector<string>_v=split(#args,',');err(_v.begin(),args);cout<<endl;}
+vector<string> split(const string &s, char c) {vector<string>v; stringstream ss(s); string x;while (getline(ss, x, c))v.emplace_back(x); return move(v);} void err(vector<string>::iterator it) {}
+template<typename T, typename... Args>void err(vector<string>::iterator it, T a, Args...args) {cout << it->substr((*it)[0] == ' ', it->length()) << " = " << a << " "; err(++it, args...);}
+#define int long long
+const int N = 5e5+5;
+vector<pair<int,int>> g[N] , rg[N];
+int dist[N];
+int n,m;
+
+void dijkastra1(){
+    set<pair<int,int>> v;
+    for(int i=1;i<=n;i++){
+        v.insert({dist[i] , i});
+    }
+    while(v.size()){
+        auto uu = v.begin();
+        int u = (*uu).second;
+        v.erase(uu);
+        for(auto i: g[u]){
+            if(dist[i.first] > dist[u]+i.second){
+                v.erase({dist[i.first] , i.first});
+                dist[i.first] = dist[u]+i.second;
+                v.insert({dist[i.first] , i.first});
+            }
+        }
+    }
+}
+
+void dijkastra2(){
+    set<pair<int,int>> v;
+    for(int i=1;i<=n;i++){
+        v.insert({dist[i] , i});
+    }
+    while(v.size()){
+        auto uu = v.begin();
+        int u = (*uu).second;
+        v.erase(uu);
+        for(auto i: rg[u]){
+            if(dist[i.first] > dist[u]+i.second){
+                v.erase({dist[i.first] , i.first});
+                dist[i.first] = dist[u]+i.second;
+                v.insert({dist[i.first] , i.first});
+            }
+        }
+    }
+}
+
+
+signed solve(){
+
+    cin>>n>>m;
+
+    for(int i=0;i<=n;i++)dist[i] = 1e18;
+    dist[1] = 0;
+    
+    int x,y,v;
+    for(int i=0;i<m;i++){
+        cin>>x>>y>>v;
+        g[x].push_back({y,v});
+        rg[y].push_back({x,v});
+    }
+
+    dijkastra1();
+    dijkastra2();
+
+    for(int i=2;i<=n;i++){
+        cout<<((dist[i] > 1e17)? -1 : dist[i])<<" ";
+    }cout<<endl;
+
+    return 0;
+}
+signed main(){
+    ios::sync_with_stdio(false);cin.tie(0);int test = 1;
+    // cin>>test;
+    while (test--)solve();return 0;
+}
