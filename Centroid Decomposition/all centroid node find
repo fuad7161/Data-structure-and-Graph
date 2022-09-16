@@ -1,0 +1,90 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+//debug..........
+#define error(args...) {vector<string>_v=split(#args,',');err(_v.begin(),args);cout<<endl;}
+vector<string> split(const string &s, char c) {vector<string>v; stringstream ss(s); string x;while (getline(ss, x, c))v.emplace_back(x); return move(v);} void err(vector<string>::iterator it) {}
+template<typename T, typename... Args>void err(vector<string>::iterator it, T a, Args...args) {cout << it->substr((*it)[0] == ' ', it->length()) << " = " << a << " "; err(++it, args...);}
+#define int long long
+const int N = 2e5+5;
+const int Inf = 1e9;
+int n,sz[N] , fa[N] , minn = Inf , cent1, cent2;
+vector<int>g[N];
+
+void dfs(int x, int f){
+    fa[x] = f;
+    sz[x] = 1;
+    int mx = 0;
+    for(int y: g[x]){
+        if(y == f){
+            continue;
+        }
+        dfs(y,x);
+        sz[x] += sz[y];
+        mx = max(mx , sz[y]);
+    }
+    mx = max(mx , n-sz[x]);
+    if(mx < minn){
+        minn = mx;
+        cent1 = x;
+        cent2 = 0;
+    }else if(mx == minn){
+        cent2 = x;
+    }
+}
+
+int S;
+
+void dfs2(int x, int f){
+    if(g[x].size() == 1){
+        S = x;
+        return ;
+    }
+    for(int y: g[x]){
+        if(y == f)continue;
+        dfs2(y,x);
+    }
+}
+
+signed solve(){
+
+    cin>>n;
+    cent1 = cent2 = 0 , minn = Inf;
+    for(int i=0;i<=n;i++){
+        g[i].clear();
+        fa[i] = 0;
+    }
+
+
+    for(int i=1;i<n;i++){
+        int x,y;
+        cin>>x>>y;
+        g[x].push_back(y);
+        g[y].push_back(x);
+    }
+
+    dfs(1,0);
+
+    error(cent1 , cent2)
+
+    if(!cent2){
+        cout<<1<<" "<<g[1][0]<<"\n"<<1<<" "<<g[1][0]<<endl;
+        return 0;
+    }
+
+
+    if(fa[cent1] != cent2){
+        swap(cent2 , cent1);
+    }
+
+    dfs2(cent1 , cent2);
+
+    cout<<S <<" "<<fa[S]<<"\n"<<S<<" "<<cent2<<endl;
+
+    return 0;
+}
+signed main(){
+    ios::sync_with_stdio(false);cin.tie(0);int test = 1;
+    // cin>>test;
+    while (test--)solve();return 0;
+}
